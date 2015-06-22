@@ -1,0 +1,74 @@
+<apex:page standardController="Kizuna_Volunteer__c" sidebar="false" showheader="false" cache="false" docType="html-5.0" applyBodyTag="false" applyHtmlTag="false" standardStylesheets="false">
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephome=no" />
+    <link rel="stylesheet/less" type="text/css" href="{!URLFOR($Resource.s1style, 'styles.css')}" />
+    <link rel="stylesheet/less" type="text/css" href="{!URLFOR($Resource.s1style, 'icons.css')}" />
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/less.min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/jquery-2.1.1.min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/underscore-min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/fastclick.min.js')}"></script>
+    <script src="/canvas/sdk/js/publisher.js"></script>
+    <apex:remoteObjects >
+        <apex:remoteObjectModel name="Kizuna_Volunteer__c" fields="Id" jsShorthand="Volunteer">
+            <apex:remoteObjectField name="lat__c" jsShorthand="lat"/>
+            <apex:remoteObjectField name="lng__c" jsShorthand="lng"/>
+            <apex:remoteObjectField name="ActivityStatus__c" jsShorthand="activityStatus"/>
+        </apex:remoteObjectModel>
+    </apex:remoteObjects>
+    <script>
+    (function($) {
+        $(function() {
+            FastClick.attach(document.body);
+
+            var close = function() {
+                Sfdc.canvas.publisher.publish({
+                    name: 'publisher.close',
+                    payload: {refresh: true}
+                });
+            };
+
+            var save = function() {
+                var vol = new SObjectModel.Volunteer({ 
+                    Id: '{!JSENCODE(Kizuna_Volunteer__c.Id)}',
+                    activityStatus: 'Completed'
+                });
+                vol.update(function(err, ids) {
+                    if (err) {
+                        alert('{!JSENCODE($Label.Kizuna_EndVolunteerError)}');
+                    }
+                    close();
+                });
+            };
+
+            var confirmSave = function() {
+                if ({!IF(Kizuna_Volunteer__c.ActivityStatus__c == 'Completed', true, false)}) {
+                    if (confirm('{!JSENCODE($Label.Kizuna_Comfirm_VolunteerActivityStatusCompleted)}')) {
+                        save();
+                    } else {
+                        close();
+                    }
+                } else if ({!IF(Kizuna_Volunteer__c.ActivityStatus__c == 'None', true, false)}) {
+                    if (confirm('{!JSENCODE($Label.Kizuna_Comfirm_VolunteerActivityStatusNone)}')) {
+                        save();
+                    } else {
+                        close();
+                    }
+                } else {
+                    save();
+                }
+            };
+
+            if (typeof sforce !== 'undefined' && sforce !== null) {
+                confirmSave();
+            }
+        });
+    })(jQuery.noConflict());
+    </script>
+</head>
+<body>
+<span>{!$Label.Kizuna_PreaseWait}</span>
+</body>
+</html>
+</apex:page>

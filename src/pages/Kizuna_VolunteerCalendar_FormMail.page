@@ -1,0 +1,36 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false">
+<style>
+</style>
+<div ng-controller="FormMailController" ng-init="init()">
+  <div class="container">
+    <div class="row clearfix">
+      <div class="col-md-12 column">
+        <h3 class="event-title text-center text-primary">{{volunteer.name}}</h3>
+        <div class="mybutton returnToCalendarButton" ng-click="back()">{!$Label.kizuna_back}</div>
+        <p style="margin-top: 30px;">{!$Label.Kizuna_explain_Confirmationcode}</p>
+      </div>
+    </div>
+    <div class="row clearfix">
+      <div class="col-md-12 column">
+	      <form name="mailform">
+	        <div class="form-group">
+	          <label for="inputEmail1" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.Email__c.label}</label>
+	          <input type="email" name="email" id="inputEmail1" class="form-control mail-form-input" required ="true" ng-model="candidate.email" placeholder="xxx@yyy.zzz" ng-readonly="candidate.status != 'waitingEmail'"/>
+	        </div>
+
+	        <button id="sendEmailButton" class="mybutton submitButton" ng-click="sendEmail()" ng-if="mailform.email.$valid && candidate.status == 'waitingEmail'">{!$Label.kizuna_send}</button>
+
+	        <div id='confirmcodeinput' ng-if="candidate.status == 'waitingConfirmationCode'">
+	          <p style="margin-top: 20px;">{!$Label.Kizuna_Allow_Input_Confirmationcode}</p>
+	          <div class="form-group">
+	            <label for="inputConfirmationCode1" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.ConfirmationCode__c.label}</label>
+	            <input name="confirmationCode" type="text" id="inputConfirmationCode1" class="form-control mail-form-input" required ="true" ng-model="candidate.confirmCode" />
+	          </div>
+	          <button id="sendConfirmCode" class="mybutton submitButton" ng-if="mailform.confirmationCode.$valid" ng-click="sendConfirmCode()">{!$Label.kizuna_send}</button>
+	        </div>
+      	</form>
+      </div>
+    </div>
+  </div>
+</div>
+</apex:page>

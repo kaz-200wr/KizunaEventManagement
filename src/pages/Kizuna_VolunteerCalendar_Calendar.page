@@ -1,0 +1,23 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false">
+<style>
+#vf-page {
+margin-top: 20px;
+text-align: center;
+font-size: 14px;
+font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+}
+
+#calendar {
+width: 100%;
+margin: 0 auto;
+}
+</style>
+
+<div ng-controller="CalendarController" ng-init="init()">
+    <h3 ng-if="isNoEvent">There is no active volunteer</h3>
+    <div id="vf-page">
+        <div id="calendar"></div>
+    </div>
+</div>
+
+</apex:page>

@@ -1,0 +1,10 @@
+Hello,
+As a step of entry, please validate the email address {!Kizuna_Candidate__c.Email__c}.
+
+Copy and paste the confirmation code below into the form.
+------
+{!Kizuna_Candidate__c.ConfirmationCode__c}
+-----
+
+Thank you,
+{!Organization.Name}

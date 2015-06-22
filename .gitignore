@@ -1,4 +1,6 @@
-.project
-.settings
+*.sublime-project
+*.sublime-settings
+*.sublime-workspace
+config
 salesforce.schema
 Referenced Packages

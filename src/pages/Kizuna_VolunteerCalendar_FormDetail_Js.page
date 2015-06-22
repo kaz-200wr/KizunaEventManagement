@@ -1,0 +1,80 @@
+<apex:page standardStylesheets="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+<script>
+entryApp.controller("FormDetailController", function($scope, vcService){
+    $scope.candidate;
+    $scope.volunteer;
+
+    $scope.init = function(){
+        if(Object.keys(vcService.volunteer).length == 0 ||
+            Object.keys(vcService.candidate).length == 0){
+            location.href = '#/';
+        }
+        $scope.candidate = vcService.candidate;
+        $scope.volunteer = vcService.volunteer;
+    }
+
+    $scope.submit = function(){
+        var candidateSobj = new SObjectModel.Candidate();
+        candidateSobj.set('Id',$scope.candidate.id);
+        candidateSobj.set('LastName__c',$scope.candidate.lastName);
+        candidateSobj.set('FirstName__c',$scope.candidate.firstName);
+        candidateSobj.set('BirthOfDate__c',$scope.candidate.birthOfDate);
+        candidateSobj.set('Gender__c',$scope.candidate.gender);
+        candidateSobj.set('BloodType__c',$scope.candidate.bloodType);
+        candidateSobj.set('PostalCode__c',$scope.candidate.postalCode);
+        candidateSobj.set('State__c',$scope.candidate.state);
+        candidateSobj.set('City__c',$scope.candidate.city);
+        candidateSobj.set('Email__c',$scope.candidate.email);
+        candidateSobj.set('BirthOfDate__c',$scope.candidate.birthOfDate);
+        candidateSobj.set('Street__c',$scope.candidate.street);
+        candidateSobj.set('Building__c',$scope.candidate.building);
+        candidateSobj.set('Phone__c',$scope.candidate.phone);
+        candidateSobj.set('MobilePhone__c',$scope.candidate.mobilePhone);
+        candidateSobj.set('Fax__c',$scope.candidate.fax);
+        candidateSobj.set('EmargencyContactType__c',$scope.candidate.emargencyContactType);
+        candidateSobj.set('OtherEmargencyContactType__c',$scope.candidate.otherEmargencyContactType);
+        candidateSobj.set('EmargencyContactAddress__c',$scope.candidate.emargencyContactAddress);
+        candidateSobj.set('EmargencyContactPhone__c',$scope.candidate.emargencyContactPhone);
+        candidateSobj.set('EmargencyContactName__c',$scope.candidate.emargencyContactName);
+        candidateSobj.set('EmargencyContactRelation__c',$scope.candidate.emargencyContactRelation);
+        candidateSobj.set('isConfirmCodeSentFlg__c',$scope.candidate.isConfirmCodeSentFlg);
+        candidateSobj.set('ConfirmationCode__c','');
+
+    candidateSobj.update(function(error, result, event){
+      if(error === null){
+        console.log('data update Success!');
+        console.log(result);
+
+        $scope.candidate.status = 'finish';
+                vcService.candidate = $scope.candidate;
+
+        var participantSobj = new SObjectModel.Participant();
+        participantSobj.set('Volunteer__c', vcService.volunteer.id);
+        participantSobj.set('Candidate__c', candidateSobj.get('Id'));
+        participantSobj.set('Email_UseForWorkflowProcess__c', candidateSobj.get('Email__c'));
+        participantSobj.create(function(error, result, event){
+          if(error === null){
+            console.log('data create Success!');
+            console.log(result);
+            $scope.afterSubmit();
+          }else{
+            console.log(error);
+          }
+        });
+      }else{
+        console.log('data retrieve Error');
+        console.log(error);
+      }
+    });
+    }
+
+    $scope.afterSubmit = function(){
+        location.href="#/thankyou";
+    }
+
+  $scope.back = function(){
+        location.href="#/";
+  }
+});
+</script>
+</apex:page>

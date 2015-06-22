@@ -1,0 +1,35 @@
+<apex:page standardStylesheets="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+<script>
+entryApp.controller("ThankYouController", function($scope, vcService){
+	$scope.candidate;
+	$scope.volunteer;
+	$scope.term;
+
+	$scope.init = function(){
+  	if(Object.keys(vcService.volunteer).length == 0 ||
+  		Object.keys(vcService.candidate).length == 0){
+	    location.href = '#/';
+  	}
+		$scope.candidate = vcService.candidate;
+		$scope.volunteer = vcService.volunteer;
+
+		$scope.term = $scope.formatDate($scope.volunteer.start._d);
+    if($scope.volunteer.start_time){
+      $scope.term += '(' + $scope.volunteer.start_time +')';
+    }
+    $scope.term += ' 〜 ' + $scope.formatDate($scope.volunteer.end._d);
+    if($scope.volunteer.end_time){
+      $scope.term += '(' + $scope.volunteer.end_time + ')'
+    }
+	}
+
+  $scope.formatDate = function(date){
+  	return date.getFullYear() + '/' + (Number(date.getMonth()) + 1) + '/' + date.getDate()
+  }
+    
+  $scope.back = function(){
+    location.href="#/";
+  }
+});
+</script>
+</apex:page>

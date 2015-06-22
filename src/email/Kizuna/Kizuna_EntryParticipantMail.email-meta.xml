@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Kizuna_EntryParticipantMail</name>
+    <style>none</style>
+    <subject>Thank for your participation of our volunteer event</subject>
+    <type>text</type>
+</EmailTemplate>

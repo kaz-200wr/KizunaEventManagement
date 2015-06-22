@@ -1,0 +1,120 @@
+<apex:page showHeader="false" standardStylesheets="false" cache="false">
+  <style type="text/css">
+    body{margin:0;}
+
+    .mybutton{
+      padding:8px;
+      text-align:center;
+      text-decoration:none;
+      border: 0;
+      line-height: 1.5;
+      font-weight: normal;
+      font-size: 1em;
+      -webkit-border-radius: 0;
+      border-radius: 0;
+      cursor: pointer;
+    }
+    .mybutton:hover{
+      text-decoration:none;
+    }
+
+    .submitButton{
+      background:#405dca;
+      color:#ffffff;
+      width:100px;
+      position: relative;
+      left: calc(50% - 50px);
+    }
+    .submitButton:hover{
+      background:#364ea5;
+    }
+    .returnToCalendarButton{
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: rgba(233, 233, 233, 0.48);
+      width: 100px;
+      color: #333333;
+      border: 1px solid rgba(180, 180, 180, 0.36);
+    }
+    .returnToCalendarButton:hover{
+      background: rgba(162, 162, 162, 0.48);
+    }
+    section{
+      height:100%;
+      width:100%;
+      margin:0 auto;
+      position:absolute;
+      -webkit-transition: 0.7s;
+      -moz-transition: 0.7s;
+      -o-transition: 0.7s;
+      transition:0.7s;
+    }
+
+    #dhtmlxcalender{
+    }
+
+    .position-normal{
+      top:0;
+      left:0;
+    }
+    .position-up{
+      top:-100%;
+      display:none:
+    }
+    .position-right{
+      left:100%;
+      display:none:
+    }
+    .position-down{
+      top:100%;
+      display:none:
+    }
+    .position-left{
+      left:-100%;
+      display:none:
+    }
+
+    #event-detail fieldset{
+      margin:0;
+      padding:0;
+      border:none;
+      float:left;
+      display:inline;
+      width:260px;
+      margin-left:25px;
+    }
+
+    fieldset p, fieldset blockquote, fieldset ul, fieldset ol, fieldset form{
+      margin:1em 0;
+    }
+
+    fieldset legend{display:none;}
+    fieldset p{margin:.5em 0;}
+    fieldset label{display:block;}
+
+    fieldset textarea{
+      height:125px;
+      overflow:auto;
+      }
+    fieldset p.submit{
+      clear:both;
+      padding:0 25px 20px 25px;
+      margin:0;
+     text-align:right;
+    }
+    fieldset button{
+      width:150px;
+      height:37px;
+      line-height:37px;
+      border:none;
+      color:#fff;
+      cursor:pointer;
+      text-align:center;
+    }
+    #entry-form>.container>.data{
+      background-color: rgb(241, 241, 241);
+      margin: 15px;
+    }
+  </style>
+</apex:page>

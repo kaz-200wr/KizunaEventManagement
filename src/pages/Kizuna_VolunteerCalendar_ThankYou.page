@@ -1,0 +1,48 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false">
+<style>
+</style>
+
+<div ng-controller="ThankYouController" ng-init="init()">
+  <div class="container">
+    <div class="row clearfix">
+      <div class="col-md-12 column">
+        <div class="mybutton returnToCalendarButton" ng-click="back()">{!$Label.kizuna_back}</div>
+        <h2 class="text-center text-primary">Thank you!</h2>
+        <h3 class="event-title text-center text-primary">{{volunteer.name}}</h3>
+      </div>
+    </div>
+
+    <div class="row clearfix">
+      <div class="col-md-6 column">
+	      <div class="form-horizontal">
+	        <fieldset class="form-group">
+	          <p>
+	            <label for="description">{!$ObjectType.Kizuna_Volunteer__c.fields.Description__c.label}</label>
+	            <div id="descriptionVal" class="event-detail-text" name="description" >{{volunteer.description}}</div>
+	          </p>
+	          <p>
+	            <label for="start_end_date">{!$ObjectType.Kizuna_Volunteer__c.fields.Term__c.label}</label>
+	            <div id="start_end_dateVal" class="event-detail-text" name="start_end_date" >{{term}}</div>
+	          </p>
+	          <p>
+	            <label for="meetplace">{!$ObjectType.Kizuna_Volunteer__c.fields.MeetPlace__c.label}</label>
+	            <div id="meetplaceVal" class="event-detail-text" name="meetplace" >{{volunteer.meetplace}}</div>
+	          </p>
+	        </fieldset>
+	      </div>
+      </div>
+
+	    <div class="col-md-6 column">
+	      <div class="form-horizontal">
+	        <fieldset class="form-group">
+	          <p>
+	            <label for="article">{!$ObjectType.Kizuna_Volunteer__c.fields.Article__c.label}</label>
+	            <div id="articleVal" class="event-detail-text" name="article" ng-bind-html="volunteer.article"></div>
+	          </p>
+	        </fieldset>
+	      </div>
+	    </div>
+    </div>
+  </div>
+</div>
+</apex:page>

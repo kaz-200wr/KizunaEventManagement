@@ -1,0 +1,7 @@
+Hello {!Kizuna_Participant__c.CandidateName__c},
+
+Thank you for your entry to {!Kizuna_Participant__c.VolunteerName__c}.
+Please wait our reply via an email after we examine whether each applicant meets the qualifications of this volunteer event. 
+
+Best Regards,
+{!Organization.Name}

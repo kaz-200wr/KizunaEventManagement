@@ -1,0 +1,75 @@
+<apex:page standardController="Kizuna_Volunteer__c" sidebar="false" showheader="false" cache="false" docType="html-5.0" applyBodyTag="false" applyHtmlTag="false" standardStylesheets="false">
+<html>
+
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+<apex:includeScript value="{!URLFOR($Resource.kizuna_resource, 'libs/jquery-2.1.1.min.js')}"/>
+
+<apex:includeScript value="{!URLFOR($Resource.kizuna_resource, 'libs/moment.min.js')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.kizuna_resource, 'libs/fullcalendar/fullcalendar.min.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.kizuna_resource, 'libs/fullcalendar/fullcalendar.min.js')}"/>
+
+<apex:stylesheet value="{!URLFOR($Resource.kizuna_resource, 'libs/bootstrap/bootstrap.min.css')}"/>
+
+<apex:includeScript value="{!URLFOR($Resource.kizuna_resource, 'libs/angular.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.kizuna_resource, 'libs/angular-route.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.kizuna_resource, 'libs/angular-touch.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.kizuna_resource, 'libs/ui-bootstrap-tpls.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.kizuna_resource, 'libs/angular-sanitize.min.js')}"/>
+
+<apex:include pageName="Kizuna_VolunteerCalendar_Css"/>
+<script>
+var entryApp = angular.module("VolunteerEntryFormApp", ['ngRoute', 'ui.bootstrap', 'ngTouch', 'ngSanitize']);
+
+entryApp.config(function ($routeProvider) {
+  $routeProvider.
+    when('/', {
+      controller: 'CalendarController',
+      templateUrl: '{!$Page.Kizuna_VolunteerCalendar_Calendar}'
+    }).
+    when('/volunteers/:id', {
+      controller: 'EventDetailController',
+      templateUrl: '{!$Page.Kizuna_VolunteerCalendar_EventDetail}'
+    }).
+    when('/candidate/mail', {
+      controller: 'FormMailController',
+      templateUrl: '{!$Page.Kizuna_VolunteerCalendar_FormMail}'
+    }).
+    when('/candidate/detail', {
+      controller: 'FormDetailController',
+      templateUrl: '{!$Page.Kizuna_VolunteerCalendar_FormDetail}'
+    }).
+    when('/thankyou', {
+      controller: 'ThankYouController',
+      templateUrl: '{!$Page.Kizuna_VolunteerCalendar_ThankYou}'
+    }).
+    otherwise({
+      redirectTo: '/'
+    });
+});
+
+entryApp.service('vcService', function () {
+  return{
+    volunteer: {},
+    candidate: {}
+  }
+});
+</script>
+<apex:remoteObjects >
+  <apex:remoteObjectModel name="Kizuna_Volunteer__c" fields="Id,Name,IsPublic__c,Description__c,Article__c,Status__c,CancelReason__c,StartDate__c,EndDate__c,StartDate_w__c,EndDate_w__c,Term__c,MeetTime__c,MeetPlace__c,StartTime__c,ActivityStatus__c,Notes__c,ParentVolunteer__c,NumberOfParticipant__c,NumberOfPositions__c,NumberOfCheckin__c" jsShorthand="Volunteer"/>
+  <apex:remoteObjectModel name="Kizuna_Candidate__c" fields="Id,LastName__c,FirstName__c,BirthOfDate__c,Gender__c,BloodType__c,PostalCode__c,State__c,City__c,Street__c,Building__c,Phone__c,MobilePhone__c,Fax__c,Email__c,EmargencyContactType__c,OtherEmargencyContactType__c,EmargencyContactAddress__c,EmargencyContactPhone__c,EmargencyContactName__c,EmargencyContactRelation__c,ConfirmationCode__c,isConfirmCodeSentFlg__c" jsShorthand="Candidate" />
+  <apex:remoteObjectModel name="Kizuna_Participant__c" fields="Id,Volunteer__c,Candidate__c,EntryDate__c,Email_UseForWorkflowProcess__c" jsShorthand="Participant" />
+</apex:remoteObjects>
+
+<apex:include pageName="Kizuna_VolunteerCalendar_Calendar_Js"/>
+<apex:include pageName="Kizuna_VolunteerCalendar_EventDetail_Js"/>
+<apex:include pageName="Kizuna_VolunteerCalendar_FormMail_Js"/>
+<apex:include pageName="Kizuna_VolunteerCalendar_FormDetail_Js"/>
+<apex:include pageName="Kizuna_VolunteerCalendar_ThankYou_Js"/>
+<body>
+    <div ng-app="VolunteerEntryFormApp">
+        <div class="ng-view" style="margin: 20px 0;"></div>
+    </div>
+</body>
+
+</html>
+</apex:page>

@@ -1,0 +1,137 @@
+<apex:page standardStylesheets="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<script>
+entryApp.controller("FormMailController", function($scope, $routeParams, vcService){
+	$scope.candidate = {status: 'waitingEmail'};
+  $scope.volunteer;
+
+  $scope.init = function(){
+    if(Object.keys(vcService.volunteer).length == 0){
+      location.href = '#/';
+    }else{
+      $scope.volunteer = vcService.volunteer;
+    }
+
+  }
+
+	$scope.sendEmail = function(){
+    var candidateSobj = new SObjectModel.Candidate();
+      candidateSobj.retrieve({
+        limit:1,
+        where :{
+          Email__c: { eq: $scope.candidate.email}
+        }
+      },
+      function(error, records){
+        if(error === null){
+          console.log('data retrieve Success!');
+          var confirmCode = String(100 + Math.floor( Math.random()*100 )).slice(1,3) + String(100 + Math.floor( Math.random()*100 )).slice(1,3) + String(100 + Math.floor( Math.random()*100 )).slice(1,3);
+          if(records.length == 1){
+            var updateCandidateSobj = new SObjectModel.Candidate();
+            updateCandidateSobj.set('Id', records[0].get('Id'));
+            updateCandidateSobj.set('ConfirmationCode__c', confirmCode);
+            updateCandidateSobj.set('isConfirmCodeSentFlg__c', false);
+            updateCandidateSobj.update(function(error, result, event){
+              if(error === null){
+                console.log('data update Success!');
+                console.log(result);
+                $scope.afterSentMail();
+              }else{
+                console.log('data retrieve Error');
+                console.log(error);
+              }
+            });
+          }else{
+            var insertCandidateSobj = new SObjectModel.Candidate();
+            insertCandidateSobj.set('Email__c', $scope.candidate.email);
+            insertCandidateSobj.set('FirstName__c', 'noname');
+            insertCandidateSobj.set('LastName__c', 'noname');
+            insertCandidateSobj.set('ConfirmationCode__c', confirmCode);
+            insertCandidateSobj.set('isConfirmCodeSentFlg__c', false);
+            insertCandidateSobj.create(function(error, result, event){
+              if(error === null){
+                console.log('data create Success!');
+                console.log(result);
+                $scope.afterSentMail();
+              }else{
+                console.log(error);
+              }
+            });
+          }
+        }else{
+          console.log('data retrieve Error');
+          console.log(error);
+        }
+      }
+    );
+	}
+
+	$scope.afterSentMail = function(){
+    $scope.$apply(function(){
+			$scope.candidate.status = 'waitingConfirmationCode';
+		});
+	}
+
+	$scope.sendConfirmCode = function(){
+    var candidateSobj = new SObjectModel.Candidate();
+    candidateSobj.retrieve({
+      limit:1,
+      where :{
+        Email__c: { eq: $scope.candidate.email},
+        ConfirmationCode__c: { eq: $scope.candidate.confirmCode}
+      }
+    },
+    function(error, records){
+      if(error === null){
+        console.log('data retrieve Success!');
+        console.log(records);
+
+        if(records.length != 1){
+          alert('{!JSENCODE($Label.Kizuna_Alert_ConfirmCode2)}');
+        }else{
+					$scope.candidate.id = records[0].get('Id');
+					$scope.candidate.lastName = records[0].get('LastName__c');
+					$scope.candidate.firstName = records[0].get('FirstName__c');
+					$scope.candidate.birthOfDate = records[0].get('BirthOfDate__c');
+					$scope.candidate.gender = records[0].get('Gender__c');
+					$scope.candidate.bloodType = records[0].get('BloodType__c');
+					$scope.candidate.postalCode = records[0].get('PostalCode__c');
+					$scope.candidate.state = records[0].get('State__c');
+					$scope.candidate.city = records[0].get('City__c');
+					$scope.candidate.street = records[0].get('Street__c');
+					$scope.candidate.building = records[0].get('Building__c');
+					$scope.candidate.phone = records[0].get('Phone__c');
+					$scope.candidate.mobilePhone = records[0].get('MobilePhone__c');
+					$scope.candidate.fax = records[0].get('Fax__c');
+					$scope.candidate.emargencyContactType = records[0].get('EmargencyContactType__c');
+					$scope.candidate.otherEmargencyContactType = records[0].get('OtherEmargencyContactType__c');
+					$scope.candidate.emargencyContactAddress = records[0].get('EmargencyContactAddress__c');
+					$scope.candidate.emargencyContactPhone = records[0].get('EmargencyContactPhone__c');
+					$scope.candidate.emargencyContactName = records[0].get('EmargencyContactName__c');
+					$scope.candidate.emargencyContactRelation = records[0].get('EmargencyContactRelation__c');
+					$scope.candidate.isConfirmCodeSentFlg = records[0].get('isConfirmCodeSentFlg__c');
+
+			    $scope.candidate.status = 'waitingCandidateDetail';
+
+          if($scope.candidate.lastName == 'noname'){
+            $scope.candidate.lastName = '';
+          }
+          if($scope.candidate.firstName == 'noname'){
+            $scope.candidate.firstName = '';
+          }
+			    vcService.candidate = $scope.candidate;
+    			location.href="#/candidate/detail";
+        }
+      }else{
+        console.log('data retrieve Error');
+        console.log(error);
+      }
+    });
+	}
+
+  $scope.back = function(){
+    location.href="#/";
+  }
+});
+</script>
+</apex:page>

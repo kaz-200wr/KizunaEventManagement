@@ -1,0 +1,144 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false">
+<style>
+</style>
+<div ng-controller="FormDetailController"  ng-init="init()">
+  <div class="container">
+    <div class="row clearfix">
+      <div class="col-md-12 column">
+        <h3 class="event-title text-center text-primary">{{volunteer.name}}</h3>
+        <div class="mybutton returnToCalendarButton" ng-click="back()">{!$Label.kizuna_back}</div>
+      </div>
+    </div>
+
+    <form name="form">
+      <div class="row clearfix data">
+        <div class="col-md-6 column">
+          <div class="form-group">
+            <label for="inputLastName2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.LastName__c.label}</label>
+            <input type="text" name="lastname" id="inputLastName2" class="form-control entry-form-input" required ="true" ng-model="candidate.lastName" />
+          </div>
+          <div class="form-group">
+            <label for="inputFirstName2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.FirstName__c.label}</label>
+            <input type="text" name="firstname" id="inputFirstName2" class="form-control entry-form-input" required ="true" ng-model="candidate.firstName" />
+          </div>
+        </div>
+
+        <div class="col-md-6 column">
+          <div class="form-group">
+            <label for="inputGender2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.Gender__c.label}</label>
+            <select id="inputGender2" class="form-control entry-form-input" ng-model="candidate.gender">
+              <option>Male</option>
+              <option>Female</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="inputBloodType2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.BloodType__c.label}</label>
+            <select id="inputBloodType2" class="form-control entry-form-input" ng-model="candidate.bloodType">
+              <option>A</option>
+              <option>B</option>
+              <option>AB</option>
+              <option>O</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="inputBirthOfDate2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.BirthOfDate__c.label}</label>
+            <input type="date" id="inputBirthOfDate2" class="form-control entry-form-input" ng-model="candidate.birthOfDate"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="row clearfix data">
+        <div class="col-md-6 column">
+          <div class="form-group">
+            <label for="inputPostalCode2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.PostalCode__c.label}</label>
+            <input type="text" id="inputPostalCode2" class="form-control entry-form-input" ng-model="candidate.postalCode" />
+          </div>
+          <div class="form-group">
+            <label for="inputState2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.State__c.label}</label>
+            <input type="text" id="inputState2" class="form-control entry-form-input" ng-model="candidate.state" />
+          </div>
+          <div class="form-group">
+            <label for="inputCity2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.City__c.label}</label>
+            <input type="text" id="inputCity2" class="form-control entry-form-input" ng-model="candidate.city" />
+          </div>
+        </div>
+
+        <div class="col-md-6 column">
+          <div class="form-group">
+            <label for="inputStreet2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.Street__c.label}</label>
+            <input type="text" id="inputStreet2" class="form-control entry-form-input" ng-model="candidate.street" />
+          </div>
+          <div class="form-group">
+            <label for="inputBuilding2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.Building__c.label}</label>
+            <input type="text" id="inputBuilding2" class="form-control entry-form-input" ng-model="candidate.building"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="row clearfix data">
+        <div class="col-md-6 column">
+          <div class="form-group">
+            <label for="inputPhone2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.Phone__c.label}</label>
+            <input type="tel" id="inputPhone2" class="form-control entry-form-input" ng-model="candidate.phone" />
+          </div>
+          <div class="form-group">
+            <label for="inputMobilePhone2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.MobilePhone__c.label}</label>
+            <input type="tel" id="inputMobilePhone2" class="form-control entry-form-input" ng-model="candidate.mobilePhone" />
+          </div>
+        </div>
+        <div class="col-md-6 column">
+          <div class="form-group">
+            <label for="inputEmail2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.Email__c.label}</label>
+            <input type="text" id="inputEmail2" class="form-control entry-form-input" ng-model="candidate.email"/>
+          </div>
+          <div class="form-group">
+            <label for="inputFax2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.Fax__c.label}</label>
+            <input type="text" id="inputFax2" class="form-control entry-form-input" ng-model="candidate.fax"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="row clearfix data">
+        <div class="col-md-6 column">
+          <div class="form-group">
+            <label for="inputEmargencyContactAddress2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.EmargencyContactAddress__c.label}</label>
+            <input type="text" id="inputEmargencyContactAddress2" class="form-control entry-form-input" ng-model="candidate.emargencyContactAddress" />
+          </div>
+          <div class="form-group">
+            <label for="inputEmargencyContactPhone2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.EmargencyContactPhone__c.label}</label>
+            <input type="text" id="inputEmargencyContactPhone2" class="form-control entry-form-input" ng-model="candidate.emargencyContactPhone" />
+          </div>
+        </div>
+        <div class="col-md-6 column">
+          <div class="form-group">
+            <label for="inputEmargencyContactType2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.OtherEmargencyContactType__c.label}</label>
+            <select id="inputEmargencyContactType2" class="form-control entry-form-input" ng-model="candidate.emargencyContactType">
+              <option>Home</option>
+              <option>Relative</option>
+              <option>Dormitory</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="inputEmargencyContactName2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.EmargencyContactName__c.label}</label>
+            <input type="text" id="inputEmargencyContactName2" class="form-control entry-form-input" ng-model="candidate.emargencyContactName"/>
+          </div>
+          <div class="form-group">
+            <label for="inputEmargencyContactRelation2" class="control-label">{!$ObjectType.Kizuna_Candidate__c.fields.EmargencyContactRelation__c.label}</label>
+            <select id="inputEmargencyContactRelation2" class="form-control entry-form-input" ng-model="candidate.emargencyContactRelation">
+              <option>Parents</option>
+              <option>Spouse</option>
+              <option>Child</option>
+              <option>Relative</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="submitButton" class="btn-block mybutton submitButton" ng-if="form.lastname.$valid && form.firstname.$valid" ng-click="submit()">{!$Label.kizuna_Submit}</div>
+    </form>
+  </div>
+
+</div>
+</apex:page>

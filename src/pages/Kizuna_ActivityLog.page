@@ -1,0 +1,240 @@
+<apex:page standardController="Kizuna_Volunteer__c" sidebar="false" showheader="false" cache="false" docType="html-5.0" applyBodyTag="false" applyHtmlTag="false" standardStylesheets="false">
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+    <link rel="stylesheet/less" type="text/css" href="{!URLFOR($Resource.s1style, 'styles.css')}" />
+    <link rel="stylesheet/less" type="text/css" href="{!URLFOR($Resource.s1style, 'icons.css')}" />
+
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/jquery-2.1.1.min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/underscore-min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/fastclick.min.js')}"></script>
+    <script src="/canvas/sdk/js/publisher.js"></script>
+
+    <style>
+      body{margin:0;}
+      img { border:0 }
+      .clearfix { clear:both; }
+      #container { margin: 5px 5px 0 5px; padding: 0 10px; width: calc(100% - 30px); }
+      #photoarea { float:left; width: 100%; }
+      #photoarea img { margin: 10px 0; width: 300px; display: block; }
+      #photoarea input { display: none; height: 0; }
+      .button{padding: 15px; text-align: center;  border-radius: 6px; cursor: pointer;}
+      #photobutton{ display: block; background: rgba(172, 172, 172, 0.8);}
+      #photobutton:hover { display: block; background: rgba(172, 172, 172, 1);}
+      #postbutton{ display:none;background: rgba(32, 144, 180, 0.8);}
+      #postbutton:hover{background: rgba(32, 144, 180, 1);}r
+      .commentarea{padding: 10px 0 10px 0;}
+      .desktopapp{width: calc(50% - 40px);float: left;margin: 5px;}
+    </style>
+  </head>
+
+  <body>
+    <div id="container" >
+      <section>
+        <div id="photoarea">
+          <div>
+            <input name="photo" type="file"/>
+            <u id="photobutton" class="button">{!$Label.kizuna_Take_Photo}</u>
+            <u id="postbutton" class="button">{!$Label.kizuna_post}</u>
+          </div>
+        </div>
+
+        <div class="commentarea clearfix">
+          <label for="comment">Comment</label> <br />
+          <textarea id="comment" maxlength="100" rows="5" style="width:100%"/>
+        </div>
+
+
+      </section>
+    </div>
+  </body>
+
+  <script src="{!URLFOR($Resource.kizuna_resource, 'libs/canvasResize/jquery.exif.js')}"></script>
+  <script src="{!URLFOR($Resource.kizuna_resource, 'libs/canvasResize/jquery.canvasResize.js')}"></script>
+  <script src="{!URLFOR($Resource.kizuna_resource, 'libs/canvasResize/canvasResize.js')}"></script>
+  <script>
+    var __sfdcSessionId = '{!GETSESSIONID()}';
+  </script>
+  <script src="../../soap/ajax/30.0/connection.js"></script>
+  <apex:remoteObjects >
+    <apex:remoteObjectModel name="FeedItem" fields="Id, RelatedRecordId"/>
+    <apex:remoteObjectModel name="Kizuna_Volunteer__c" fields="Id, Name" jsShorthand="Volunteer"/>
+    <apex:remoteObjectModel name="Kizuna_Activity__c" fields="Id,Name,lat__c,lng__c,PhotoId__c,FeedItemId__c,Volunteer__c" jsShorthand="Activity"/>
+  </apex:remoteObjects>
+  <script>
+
+    Sfdc.canvas.publisher.subscribe({name: "publisher.showPanel",
+      onData:function(e) {
+        Sfdc.canvas.publisher.publish({name:"publisher.setValidForSubmit", payload:"true"});
+    }});
+    Sfdc.canvas.publisher.subscribe({ name: "publisher.post",
+      onData: function(e) {
+        s1SubmitButtonAction();
+    }});
+
+    var lat, lng;
+    $().ready(function() {
+      navigator.geolocation.getCurrentPosition(
+        function(pos) {
+          lat = pos.coords.latitude;
+          lng = pos.coords.longitude;
+        },
+        function() {
+          alert('fail');
+        },
+        {enableHighAccuracy: true, timeout: 6000, maximumAge: 60000}
+      );
+
+      var isSF1=typeof sforce === 'undefined'?false:true;
+      if(navigator.userAgent.indexOf('Salesforce1') == -1){
+        $('#postbutton').show();
+        $('.button').addClass('desktopapp');
+      }
+
+      $('#photobutton').click(function() {
+        $('input[name=photo]').trigger('click');
+      });
+
+      $('input[name=photo]').change(function(e) {
+        var file = e.target.files[0];
+
+        // RESET
+        $('#photoarea p span').css('width', 0 + "%").html('');
+        $('#photoarea img, #photoarea canvas').remove();
+        console.log(e.target.files[0]);
+
+        // CANVAS RESIZING
+        $.canvasResize(file, {
+          width: 460,
+          height: 0,
+          crop: false,
+          quality: 80,
+          //rotate: 90,
+          callback: function(data, width, height) {
+            // SHOW AS AN IMAGE
+            // =================================================
+            $('<img>').load(function() {
+            $(this).css({
+                'margin': '10px auto',
+                'width': width,
+                'height': height
+              }).appendTo('#photoarea div');
+            }).attr('src', data);
+
+            // Create a new formdata
+            var fd = new FormData();
+            // Add file data
+            var f = $.canvasResize('dataURLtoBlob', data);
+            f.name = file.name;
+            fd.append($('#photoarea input').attr('name'), f);
+
+            console.log(data);
+            console.log(fd);
+          }
+        });
+      });
+
+      $('#postbutton').click(function() {
+        s1SubmitButtonAction();
+      });
+    });
+
+    function s1SubmitButtonAction(){
+////// create Feed title
+      var title;
+      var now = new Date();
+      var volunteer = new SObjectModel.Volunteer();
+      volunteer.retrieve({
+          limit:1,
+          where : {
+            Id: { eq: '{!$CurrentPage.parameters.Id}'}
+          }
+        },
+        function(error, records){
+          if(error === null){
+            console.log('data retrieve Success!');
+            title = records[0].get('Name');
+            title = title + '_'
+              + now.getFullYear()
+              + String(now.getMonth() + 101).slice(1,3)
+              + String(now.getDate() + 100).slice(1,3)
+              + String(now.getHours() + 100).slice(1,3)
+              + String(now.getMinutes() + 100).slice(1,3);
+
+////// postfeed(IMAGE UPLOADING)
+            var dataParams = $("#photoarea").children().children("img").attr('src').split(/[:;,]/);
+            var contentType = dataParams[1];
+            var dataContent = dataParams[3];
+
+            var newFeed = new sforce.SObject('FeedItem');
+            newFeed.ParentId = '{!$CurrentPage.parameters.Id}';
+            newFeed.Type = 'ContentPost';
+            newFeed.Title = title;
+            newFeed.Body = $("#comment").val();
+            newFeed.ContentData = dataContent;
+            newFeed.ContentFileName = title + '.png';
+            var res = sforce.connection.create([newFeed]);
+
+            var feedId = res[0].id;
+            console.log('feedId:'+ feedId);
+////// get Related record id
+            var feed = new SObjectModel.FeedItem();
+            feed.retrieve({
+                limit:1,
+                where : {
+                  Id: { eq: feedId}
+                }
+              },
+              function(error, records){
+                if(error === null){
+                  console.log('data retrieve Success!');
+////// create activity
+                  var activity = new SObjectModel.Activity();
+                  activity.set('Volunteer__c', '{!$CurrentPage.parameters.Id}');
+                  activity.set('lat__c', lat);
+                  activity.set('lng__c', lng);
+                  activity.set('PhotoId__c', records[0].get('RelatedRecordId'));
+                  activity.set('FeedItemId__c', feedId);
+
+                  activity.create(function(error, result, event){
+                    if(error === null){
+                      console.log('data create Success!');
+                      console.log(result);
+
+                      Sfdc.canvas.publisher.publish({ name: "publisher.close",
+                        payload:{ refresh:"true" }});
+                    }else{
+                      console.log('data creation Error');
+                      console.log(error);
+                      errorMessage();
+                    }
+                  });
+
+                }else{
+                  console.log('data retrieve Error');
+                  console.log(error);
+                  errorMessage();
+                }
+              }
+            );
+          }else{
+            console.log('data retrieve Error');
+            console.log(error);
+            errorMessage();
+          }
+        }
+      );
+    }
+
+    function errorMessage(){
+      alert('error, Something wrong.');
+      Sfdc.canvas.publisher.publish({ name: "publisher.close",
+        payload:{ refresh:"true" }});
+    }
+
+  </script>
+</html>
+</apex:page>

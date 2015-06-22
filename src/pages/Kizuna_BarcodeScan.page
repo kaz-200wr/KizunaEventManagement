@@ -1,0 +1,31 @@
+<apex:page sidebar="false" showheader="false" cache="false" docType="html-5.0" applyBodyTag="false" applyHtmlTag="false" standardStylesheets="false">
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephome=no" />
+    <link rel="stylesheet/less" type="text/css" href="{!URLFOR($Resource.s1style, 'styles.css')}" />
+    <link rel="stylesheet/less" type="text/css" href="{!URLFOR($Resource.s1style, 'icons.css')}" />
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/less.min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/jquery-2.1.1.min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/underscore-min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/fastclick.min.js')}"></script>
+    <script>
+    (function($) {
+        $(function() {
+            FastClick.attach(document.body);
+            var executeScan = function() {
+                var url = '{CODE}';
+                location.href = "zxing://scan/?ret="+ encodeURIComponent(url);
+            };
+            $('#scan').click(executeScan);
+            executeScan();
+        });
+    })(jQuery.noConflict());
+    </script>
+</head>
+<body>
+    <span>{!$Label.Kizuna_StartingBarcodeScanner}</span><br/>
+    <button id="scan">{!$Label.Kizuna_StartScanner}</button>
+</body>
+</html>
+</apex:page>

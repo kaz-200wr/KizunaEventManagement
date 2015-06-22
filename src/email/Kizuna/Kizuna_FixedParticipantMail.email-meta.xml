@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Kizuna_FixedParticipantMail</name>
+    <style>none</style>
+    <subject>Your Personalized QRcode for {!Kizuna_Participant__c.VolunteerName__c}</subject>
+    <textOnly>Hello {!Kizuna_Participant__c.CandidateName__c},
+Thank you for your entry to {!Kizuna_Participant__c.VolunteerName__c}. Your entry has been confirmed.
+
+Please come to the meeting place with this mail.
+
+-----
+Volunteer: {!Kizuna_Participant__c.VolunteerName__c}
+Date: {!Kizuna_Participant__c.StartDate__c} {!Kizuna_Participant__c.MeetTime__c}
+Meeting Place: {!Kizuna_Participant__c.MeetPlace__c}
+-----
+
+Best Regards, {!Organization.Name}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

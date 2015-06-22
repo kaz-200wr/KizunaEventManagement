@@ -1,0 +1,107 @@
+<apex:page standardController="Kizuna_Participant__c" sidebar="false" showheader="false" cache="false" docType="html-5.0" applyBodyTag="false" applyHtmlTag="false" standardStylesheets="false">
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephome=no" />
+    <link rel="stylesheet/less" type="text/css" href="{!URLFOR($Resource.s1style, 'styles.css')}" />
+    <link rel="stylesheet/less" type="text/css" href="{!URLFOR($Resource.s1style, 'icons.css')}" />
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/less.min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/jquery-2.1.1.min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/underscore-min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/fastclick.min.js')}"></script>
+    <script src="/canvas/sdk/js/publisher.js"></script>
+    <apex:remoteObjects >
+        <apex:remoteObjectModel name="Kizuna_CheckIn__c" fields="Id" jsShorthand="CheckIn">
+            <apex:remoteObjectField name="Participant__c" jsShorthand="participant"/>
+            <apex:remoteObjectField name="CheckinTime__c" jsShorthand="checkinTime"/>
+            <apex:remoteObjectField name="CheckoutTime__c" jsShorthand="checkoutTime"/>
+        </apex:remoteObjectModel>
+    </apex:remoteObjects>
+    <script>
+    (function($) {
+        $(function() {
+            FastClick.attach(document.body);
+            var template = _.template($('#checkinPrintTemplate').text());
+
+            var close = function() {
+                Sfdc.canvas.publisher.publish({
+                    name: 'publisher.close',
+                    payload: {refresh: true}
+                });
+            };
+
+            var printOut = function() {
+                var xml = template({
+                    id: '{!Kizuna_Participant__c.Id}',
+                    name: '{!JSENCODE(Kizuna_Participant__c.CandidateName__c)}'
+                });
+                var soap = '<?xml version="1.0" encoding="utf-8"?><s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body>' + xml + '</s:Body></s:Envelope>';
+                return $.ajax({
+                    type: 'POST',
+                    url: '{!JSENCODE($Label.Kizuna_Alert_PrintUrl)}/cgi-bin/epos/service.cgi?devid=local_printer&timeout=8000',
+                    data: soap,
+                    contentType: 'text/xml; charset=utf-8',
+                    timeout: 8000,
+                    cache: false,
+                    processData: false,
+                    headers: {
+                        'SOAPAction': '""'
+                    }
+                })
+                .then(
+                    function(res) {
+                        return res;
+                    },
+                    function() {
+                        var d = new $.Deferred();
+                        if (confirm('{!JSENCODE($Label.Kizuna_Alert_PrintError)}')) {
+                            d.resolve();
+                        } else {
+                            d.reject();
+                        }
+                        return d.then(function() {
+                            return printOut();
+                        }).promise();
+                    }
+                );
+            };
+
+            var save = function() {
+                var ci = new SObjectModel.CheckIn({
+                    participant: '{!Kizuna_Participant__c.Id}'
+                });
+                ci.create(function(err, ids) {
+                    if (err) {
+                        alert('{!JSENCODE($Label.Kizuna_Alert_CheckinError)}');
+                        close();
+                    } else {
+                        close();
+                        /*printOut()
+                        .fail(function() {
+                            alert('{!JSENCODE($Label.Kizuna_Alert_CheckinError)}');
+                        })
+                        .always(close);*/
+                    }
+                });
+            };
+
+            if (typeof sforce !== 'undefined' && sforce !== null) {
+                save();
+            }
+        });
+    })(jQuery.noConflict());
+    </script>
+</head>
+<body>
+<script id="checkinPrintTemplate" type="text/template-epos">
+<epos-print xmlns="http://www.epson-pos.com/schemas/2011/03/epos-print">
+    <text lang="ja"/>
+    <text><%- name %>&#10;</text>
+    <symbol type="qrcode_model_2" level="default" width="5" height="0" size="0">com.salesforce.salesforce1://entity/view?entityId=<%- id %></symbol>
+    <cut type="feed"/>
+</epos-print>
+</script>
+<span>{!$Label.Kizuna_PreaseWait}</span>
+</body>
+</html>
+</apex:page>

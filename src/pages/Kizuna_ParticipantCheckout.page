@@ -1,0 +1,85 @@
+<apex:page standardController="Kizuna_Participant__c" sidebar="false" showheader="false" cache="false" docType="html-5.0" applyBodyTag="false" applyHtmlTag="false" standardStylesheets="false">
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephome=no" />
+    <link rel="stylesheet/less" type="text/css" href="{!URLFOR($Resource.s1style, 'styles.css')}" />
+    <link rel="stylesheet/less" type="text/css" href="{!URLFOR($Resource.s1style, 'icons.css')}" />
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/less.min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/jquery-2.1.1.min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/underscore-min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/fastclick.min.js')}"></script>
+    <script src="/canvas/sdk/js/publisher.js"></script>
+    <apex:remoteObjects >
+        <apex:remoteObjectModel name="Kizuna_CheckIn__c" fields="Id" jsShorthand="CheckIn">
+            <apex:remoteObjectField name="Participant__c" jsShorthand="participant"/>
+            <apex:remoteObjectField name="CheckinTime__c" jsShorthand="checkinTime"/>
+            <apex:remoteObjectField name="CheckoutTime__c" jsShorthand="checkoutTime"/>
+        </apex:remoteObjectModel>
+    </apex:remoteObjects>
+    <script>
+    (function($) {
+        $(function() {
+            FastClick.attach(document.body);
+            var CheckIn = new SObjectModel.CheckIn();
+
+            var close = function() {
+                Sfdc.canvas.publisher.publish({
+                    name: 'publisher.close',
+                    payload: {refresh: true}
+                });
+            };
+
+            var getNewestCheckin = function(callback) {
+                CheckIn.retrieve({
+                    where :{
+                        'participant': {eq: '{!Kizuna_Participant__c.Id}'}
+                    }
+                },
+                function(error, records) {
+                    if (!error) {
+                        var newest = _.max(records, function(record) {
+                            var t = record.get('checkinTime');
+                            return t ? t.getTime() : 0;
+                        });
+                        callback(false, newest);
+                    } else {
+                        callback(true);
+                    }
+                });
+            };
+
+            var save = function() {
+                getNewestCheckin(function(err, record) {
+                    if (err) {
+                        alert('{!JSENCODE($Label.Kizuna_Alert_CheckoutError)}');
+                        close();
+                    } else {
+                        if (record.get('checkoutTime')) {
+                            alert('{!JSENCODE($Label.Kizuna_Alert_AlreadyCheckout)}');
+                            close();
+                        } else {
+                            record.set('checkoutTime', new Date());
+                            record.update(function(err, ids) {
+                                if (err) {
+                                    alert('{!JSENCODE($Label.Kizuna_Alert_CheckoutError)}');
+                                }
+                                close();
+                            });
+                        }
+                    }
+                });
+            };
+
+            if (typeof sforce !== 'undefined' && sforce !== null) {
+                save();
+            }
+        });
+    })(jQuery.noConflict());
+    </script>
+</head>
+<body>
+<span>{!$Label.Kizuna_PreaseWait}</span>
+</body>
+</html>
+</apex:page>

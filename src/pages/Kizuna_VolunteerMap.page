@@ -1,0 +1,112 @@
+<apex:page standardController="Kizuna_Volunteer__c">
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/jquery-2.1.1.min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/underscore-min.js')}"></script>
+    <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>
+    <apex:remoteObjects >
+        <apex:remoteObjectModel name="Kizuna_Activity__c" fields="Id" jsShorthand="Activity">
+            <apex:remoteObjectField name="Name" jsShorthand="name"/>
+            <apex:remoteObjectField name="PhotoId__c" jsShorthand="photoId"/>
+            <apex:remoteObjectField name="PhotoUrl__c" jsShorthand="photoUrl"/>
+            <apex:remoteObjectField name="FeedItemId__c" jsShorthand="feedItemId"/>
+            <apex:remoteObjectField name="lat__c" jsShorthand="lat"/>
+            <apex:remoteObjectField name="lng__c" jsShorthand="lng"/>
+            <apex:remoteObjectField name="Volunteer__c" jsShorthand="parentId"/>
+        </apex:remoteObjectModel>
+    </apex:remoteObjects>
+    <script type="text/javascript">
+        (function($) {
+            var map,  infowindow, infoWindowTemplate, markers = [];
+            var infoWindowTemplate = _.template($('#infoWindowTemplate').text());
+            var Activity = new SObjectModel.Activity();
+            var activityCash = {};
+            var volunteerInfo = {
+                name: '{!JSENCODE(Kizuna_Volunteer__c.Name)}',
+                lat: {!IF(ISBLANK(Kizuna_Volunteer__c.lat__c), '0', Kizuna_Volunteer__c.lat__c)},
+                lng: {!IF(ISBLANK(Kizuna_Volunteer__c.lng__c), '0', Kizuna_Volunteer__c.lng__c)}
+            };
+
+            $(function(){
+                var center = new google.maps.LatLng(35.6604005, 139.7290428);
+                if (volunteerInfo.lat && volunteerInfo.lng) {
+                    center = new google.maps.LatLng(volunteerInfo.lat, volunteerInfo.lng);
+                }
+                var opts = {
+                    zoom: 10,
+                    center: new google.maps.LatLng(35.6604005, 139.7290428),
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                map = new google.maps.Map($('#map')[0], opts);
+                if (volunteerInfo.lat && volunteerInfo.lng) {
+                    var icon = new google.maps.MarkerImage(
+                        '{!URLFOR($Resource.kizuna_resource, 'imgs/home.png')}',
+                        new google.maps.Size(32, 37),
+                        new google.maps.Point(0, 0),
+                        new google.maps.Point(16,37)
+                    );
+                    var volunteerMarker = new google.maps.Marker({
+                        title: volunteerInfo.name,
+                        position: new google.maps.LatLng(volunteerInfo.lat, volunteerInfo.lng),
+                        animation: google.maps.Animation.DROP,
+                        icon: icon
+                    });
+                    volunteerMarker.setMap(map);
+                }
+                infowindow = new google.maps.InfoWindow();
+                infoWindowTemplate = _.template($('#infoWindowTemplate').text());
+                refreshRecord(true);
+                setInterval(function() {
+                    refreshRecord(false);
+                }, 5000);
+            });
+
+            var refreshRecord = function(first) {
+                Activity.retrieve({
+                    where :{
+                        'parentId': {eq: '{!Kizuna_Volunteer__c.Id}'}
+                    }
+                },
+                function(error, records) {
+                    if (!error) {
+                        _.each(records, function(record) {
+                            if (!record.get('lat') || !record.get('lng')) return;
+                            var id = record.get('Id');
+                            if (activityCash[id]) return;
+                            activityCash[id] = record;
+
+                            var marker = new google.maps.Marker({
+                                position: new google.maps.LatLng(record.get('lat'), record.get('lng')),
+                                animation: google.maps.Animation.DROP,
+                            });
+                            var html = infoWindowTemplate({
+                                feedItemId: record.get('feedItemId'),
+                                photo: record.get('photoUrl')
+                            });
+                            google.maps.event.addListener(marker, 'click', function() {
+                                marker.setAnimation(null);
+                                infowindow.setContent(html);
+                                infowindow.open(map, marker);
+                            });
+                            setTimeout(function() {
+                                marker.setMap(map);
+                                if (!first) {
+                                    setTimeout(function() {
+                                        marker.setAnimation(google.maps.Animation.BOUNCE);
+                                    }, 500);
+                                }
+                            }, Math.random() * 1000);
+                            markers.push(marker);
+                        });
+                    }
+                });
+            };
+        })(jQuery.noConflict());
+    </script>
+    <apex:sectionHeader title="{!$ObjectType.Kizuna_Volunteer__c.label}" subtitle="{!Kizuna_Volunteer__c.Name}"/>
+    <script id="infoWindowTemplate" type="text/template">
+        <a href="/<%- feedItemId %>">Original Feed</a>
+        <div style="width: 200px">
+            <img src="<%- photo %>" alt="photo" width="200" />
+        </div>
+    </script>
+    <div id="map" style="width:100%; height:600px">&nbsp;</div>
+</apex:page>

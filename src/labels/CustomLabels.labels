@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Kizuna_Alert_AlreadyCheckout</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_Alert_AlreadyCheckout</shortDescription>
+        <value>You have already checked out.</value>
+    </labels>
+    <labels>
+        <fullName>Kizuna_Alert_CheckinError</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_Alert_CheckinError</shortDescription>
+        <value>Checkin failed</value>
+    </labels>
+    <labels>
+        <fullName>Kizuna_Alert_CheckoutError</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_Alert_CheckoutError</shortDescription>
+        <value>Checkout failed</value>
+    </labels>
+    <labels>
+        <fullName>Kizuna_Alert_ConfirmCode2</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_Alert_ConfirmCode</shortDescription>
+        <value>Please check your confirmation code.</value>
+    </labels>
+    <labels>
+        <fullName>Kizuna_Alert_PrintError</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_Alert_PrintError</shortDescription>
+        <value>Print failure. Would you print again?</value>
+    </labels>
+    <labels>
+        <fullName>Kizuna_Alert_PrintUrl</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_Alert_PrintUrl</shortDescription>
+        <value>http://192.168.1.20</value>
+    </labels>
+    <labels>
+        <fullName>Kizuna_Allow_Input_Confirmationcode</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_Allow_Input_Confirmationcode</shortDescription>
+        <value>Please enter the confirmation code which was sent to you via Email.</value>
+    </labels>
+    <labels>
+        <fullName>Kizuna_Comfirm_VolunteerActivityStatusCompleted</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_Comfirm_VolunteerActivityStatusCompleted</shortDescription>
+        <value>This volunteer has already completed. Are you sure you want to overwrite it?</value>
+    </labels>
+    <labels>
+        <fullName>Kizuna_Comfirm_VolunteerActivityStatusNone</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_Comfirm_VolunteerActivityStatusNone</shortDescription>
+        <value>This volunteer have not worked any more. Are you sure you want to overwrite it?</value>
+    </labels>
+    <labels>
+        <fullName>Kizuna_Comfirm_VolunteerActivityStatusWorking</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_Comfirm_VolunteerActivityStatusWorking</shortDescription>
+        <value>This volunteer has already worked. Are you sure you want to overwrite it?</value>
+    </labels>
+    <labels>
+        <fullName>Kizuna_EndVolunteerError</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_EndVolunteerError</shortDescription>
+        <value>End Volunteer failed</value>
+    </labels>
+    <labels>
+        <fullName>Kizuna_PreaseWait</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_PreaseWait</shortDescription>
+        <value>Prease wait...</value>
+    </labels>
+    <labels>
+        <fullName>Kizuna_StartScanner</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_StartScanner</shortDescription>
+        <value>Start scanner</value>
+    </labels>
+    <labels>
+        <fullName>Kizuna_StartVolunteerError</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_StartVolunteerError</shortDescription>
+        <value>Start Volunteer failed</value>
+    </labels>
+    <labels>
+        <fullName>Kizuna_StartingBarcodeScanner</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_StartingBarcodeScanner</shortDescription>
+        <value>Bar code scanner running...</value>
+    </labels>
+    <labels>
+        <fullName>Kizuna_explain_Confirmationcode</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Kizuna_explain_Confirmationcode</shortDescription>
+        <value>Please enter your email. You will receive an email with a confirmation code.</value>
+    </labels>
+    <labels>
+        <fullName>kizuna_Entry</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>kizuna_Entry</shortDescription>
+        <value>Entry</value>
+    </labels>
+    <labels>
+        <fullName>kizuna_NumberOfRemainingPosition</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>kizuna_NumberOfRemainingPosition</shortDescription>
+        <value>Number of Remaining Position</value>
+    </labels>
+    <labels>
+        <fullName>kizuna_Submit</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>kizuna_Submit</shortDescription>
+        <value>Submit</value>
+    </labels>
+    <labels>
+        <fullName>kizuna_Take_Photo</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>kizuna_Take_Photo</shortDescription>
+        <value>Take Photo</value>
+    </labels>
+    <labels>
+        <fullName>kizuna_back</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>kizuna_back</shortDescription>
+        <value>Back</value>
+    </labels>
+    <labels>
+        <fullName>kizuna_fixedMessage</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>kizuna_fixedMessage</shortDescription>
+        <value>This Volunteer reached the fixed number.</value>
+    </labels>
+    <labels>
+        <fullName>kizuna_post</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>kizuna_post</shortDescription>
+        <value>Post</value>
+    </labels>
+    <labels>
+        <fullName>kizuna_send</fullName>
+        <categories>kizuna</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>kizuna_send</shortDescription>
+        <value>Send</value>
+    </labels>
+</CustomLabels>

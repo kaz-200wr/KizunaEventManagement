@@ -1,0 +1,93 @@
+<apex:page standardStylesheets="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+<script>
+entryApp.controller("CalendarController", function($scope, $routeParams, vcService){
+  $scope.isNoEvent = false;
+  $scope.init = function(){
+    vcService.volunteer = {};
+    vcService.candidate = {};
+    var events = [];
+
+    var carendarSObj = new SObjectModel.Volunteer();
+    carendarSObj.retrieve({
+      limit:100,
+      where : {
+        IsPublic__c: { eq: true}
+      }
+    },
+      function(error, records){
+        if(error === null && records.length > 0){
+          console.log('data retrieve Success!');
+          angular.forEach(records, function(record, i) {
+            var startdatetime = new Date(
+              record.get('StartDate_w__c').getFullYear(),
+              record.get('StartDate_w__c').getMonth(),
+              record.get('StartDate_w__c').getDate(),
+              00,00, 00, 00);
+            if(record.get('StartTime__c') != null){
+              startdatetime.setHours(record.get('StartTime__c').split(':')[0]);
+              startdatetime.setMinutes(record.get('StartTime__c').split(':')[1]);
+            }
+            var enddatetime = new Date(
+              record.get('EndDate_w__c').getFullYear(),
+              record.get('EndDate_w__c').getMonth(),
+              record.get('EndDate_w__c').getDate(),
+              00,00, 00, 00);
+              enddatetime.setHours(24);
+              enddatetime.setMinutes(00);
+            var remainingPosition = record.get('NumberOfPositions__c') - record.get('NumberOfParticipant__c');
+            var data = {
+              'id' : record.get('Id'),
+              'title' : record.get('Name') + '(' + remainingPosition + ')',
+              'description' : record.get('Description__c'),
+              'name' : record.get('Name'),
+              'start' : startdatetime,
+              'end' : enddatetime,
+              'start_time' :  record.get('StartTime__c'),
+              'end_time' :  record.get('EndTime__c'),
+              'article' : $('<div>').html(record.get('Article__c')).text(),
+              'meetplace' : record.get('MeetPlace__c'),
+              'meettime' : record.get('MeetTime__c'),
+              'numberOfPositions' : record.get('NumberOfPositions__c'),
+              'numberOfParticipant' : record.get('NumberOfParticipant__c'),
+              'remainingPosition' : remainingPosition,
+              'color' : remainingPosition > 0 ? '#3CD4F3' : '#aabbcc'
+            }
+
+            events.push(data);
+          });
+          $scope.setCalendar(events);
+
+        }else if(error === null && records.length > 0){
+            $scope.$apply(function(){
+                $scope.isNoEvent = true;
+            });
+        }else{
+            $scope.$apply(function(){
+                $scope.isNoEvent = true;
+            });
+          console.log('data retrieve Error');
+          console.log(error);
+        }
+      }
+    );
+  }
+
+  $scope.setCalendar = function(events){
+    $('#calendar').fullCalendar({
+      editable: false,
+      events: events,
+      eventClick: function(calEvent, jsEvent, view) {
+        $scope.selectEvent(calEvent);
+      }
+    });
+  }
+
+  $scope.selectEvent = function(e){
+    vcService.volunteer = e;
+    location.href="#/volunteers/" + e.id;
+  }
+
+});
+
+</script>
+</apex:page>

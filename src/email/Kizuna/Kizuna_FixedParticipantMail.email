@@ -1,0 +1,23 @@
+<h4>Hello {!Kizuna_Participant__c.CandidateName__c}, </h4>
+<div>
+Thank you for your entry to {!Kizuna_Participant__c.VolunteerName__c}. 
+Your entry has been confirmed. 
+</div><br />
+<p>Please come to the meeting place with this mail. </p>
+</div>
+<div>
+----- <br />
+Volunteer: {!Kizuna_Participant__c.VolunteerName__c}  <br />
+Date: {!Kizuna_Participant__c.StartDate__c} {!Kizuna_Participant__c.MeetTime__c}  <br />
+Meeting Place: {!Kizuna_Participant__c.MeetPlace__c}  <br />
+</div>
+<div>
+<img src="{!Kizuna_Participant__c.CodeUrl__c}" /><br />
+<a href ="{!Kizuna_Participant__c.CodeUrl__c}" >Personalized Code</a><br />
+----- <br />
+</div>
+<br />
+<div>
+Best Regards, 
+{!Organization.Name}
+</div>

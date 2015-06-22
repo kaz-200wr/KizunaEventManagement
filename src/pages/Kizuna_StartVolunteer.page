@@ -1,0 +1,107 @@
+<apex:page standardController="Kizuna_Volunteer__c" sidebar="false" showheader="false" cache="false" docType="html-5.0" applyBodyTag="false" applyHtmlTag="false" standardStylesheets="false">
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephome=no" />
+    <link rel="stylesheet/less" type="text/css" href="{!URLFOR($Resource.s1style, 'styles.css')}" />
+    <link rel="stylesheet/less" type="text/css" href="{!URLFOR($Resource.s1style, 'icons.css')}" />
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/less.min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/jquery-2.1.1.min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/underscore-min.js')}"></script>
+    <script src="{!URLFOR($Resource.kizuna_resource, 'libs/fastclick.min.js')}"></script>
+    <script src="/canvas/sdk/js/publisher.js"></script>
+    <apex:remoteObjects >
+        <apex:remoteObjectModel name="Kizuna_Volunteer__c" fields="Id" jsShorthand="Volunteer">
+            <apex:remoteObjectField name="lat__c" jsShorthand="lat"/>
+            <apex:remoteObjectField name="lng__c" jsShorthand="lng"/>
+            <apex:remoteObjectField name="ActivityStatus__c" jsShorthand="activityStatus"/>
+        </apex:remoteObjectModel>
+    </apex:remoteObjects>
+    <script>
+    (function($) {
+        $(function() {
+            FastClick.attach(document.body);
+
+            var close = function() {
+                Sfdc.canvas.publisher.publish({
+                    name: 'publisher.close',
+                    payload: {refresh: true}
+                });
+            };
+
+            var save = function(lat, lng) {
+                var vol = new SObjectModel.Volunteer({
+                    Id: '{!JSENCODE(Kizuna_Volunteer__c.Id)}',
+                    activityStatus: 'Working'
+                });
+                if (lat && lng) {
+                    vol.set('lat', lat);
+                    vol.set('lng', lng);
+                }
+                vol.update(function(err, ids) {
+                    if (err) {
+                        alert('{!JSENCODE($Label.Kizuna_StartVolunteerError)}');
+                    }
+                    close();
+                });
+            };
+
+            var getGeolocation = function(callback) {
+                if (navigator && navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        function(pos) {
+                            var lat = pos.coords.latitude;
+                            var lng = pos.coords.longitude;
+                            callback(false, lat, lng);
+                        },
+                        function() {
+                            callback(true);
+                        },
+                        {enableHighAccuracy: true, timeout: 6000, maximumAge: 60000}
+                    );
+                } else {
+                    callback(false);
+                }
+            }
+
+            var geolocationSave = function() {
+                getGeolocation(function(err, lat, lng) {
+                    if (err) {
+                        alert('{!JSENCODE($Label.Kizuna_StartVolunteerError)}');
+                        close();
+                    } else {
+                        save(lat, lng);
+                    }
+                });
+            };
+
+            var confirmSave = function(lat, lng) {
+                if ({!IF(Kizuna_Volunteer__c.ActivityStatus__c == 'Working', true, false)}) {
+                    if (confirm('{!JSENCODE($Label.Kizuna_Comfirm_VolunteerActivityStatusWorking)}')) {
+                        geolocationSave();
+                    } else {
+                        close();
+                    }
+                } else if ({!IF(Kizuna_Volunteer__c.ActivityStatus__c== 'Completed', true, false)}) {
+                    if (confirm('{!JSENCODE($Label.Kizuna_Comfirm_VolunteerActivityStatusCompleted)}')) {
+                        geolocationSave();
+                    } else {
+                        close();
+                    }
+                } else {
+                    geolocationSave();
+                }
+            };
+
+            if (typeof sforce !== 'undefined' && sforce !== null) {
+                confirmSave();
+            }
+        });
+    })(jQuery.noConflict());
+    </script>
+</head>
+<body>
+<span>{!$Label.Kizuna_PreaseWait}</span>
+</body>
+</html>
+</apex:page>
