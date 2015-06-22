@@ -22,7 +22,10 @@ Salesforce Kizuna (Japanese word meaning “bond”) Application, allows you to 
 
 ----
 ## License
-See [license]    (MIT License).
+
+See [license]
+
+(MIT License)
 
 **Free Software, Hell Yeah!**
 Also you get this app at [appExchange]
